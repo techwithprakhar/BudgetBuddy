@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { FiMenu, FiSun, FiMoon, FiUser, FiX } from "react-icons/fi"
 import { NavLink } from "react-router-dom"

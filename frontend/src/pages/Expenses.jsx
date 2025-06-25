@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useMemo } from "react"
 import { FiPlus, FiTrendingDown } from "react-icons/fi"
 import { useData } from "../context/DataContext"

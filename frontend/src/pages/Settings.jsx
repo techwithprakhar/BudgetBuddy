@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { FiUser, FiLock, FiCamera, FiSave } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"

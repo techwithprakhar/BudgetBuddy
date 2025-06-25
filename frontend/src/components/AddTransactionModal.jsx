@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { FiX, FiPlus, FiSave, FiAlertCircle } from "react-icons/fi"
 

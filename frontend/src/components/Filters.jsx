@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { FiSearch, FiFilter, FiX, FiCalendar } from "react-icons/fi"
 import DatePicker from "react-datepicker"

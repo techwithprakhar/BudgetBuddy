@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState, useMemo } from "react"
 import { FiPlus, FiTarget, FiEdit2, FiTrash2, FiTrendingUp, FiX, FiAlertTriangle } from "react-icons/fi"
 import { useData } from "../context/DataContext"
@@ -158,7 +156,7 @@ const Goals = () => {
             icon: "✅",
             textColor: "text-green-600 dark:text-green-400",
             bgColor: "bg-green-50 dark:bg-green-900/10",
-            iconBg: "bg-green-100 dark:bg-green-900/30",
+            iconBg: "bg-green-100 dark:bg-blue-900/30",
           },
           {
             title: "In Progress",
@@ -169,7 +167,7 @@ const Goals = () => {
             icon: "🚀",
             textColor: "text-orange-600 dark:text-orange-400",
             bgColor: "bg-orange-50 dark:bg-orange-900/10",
-            iconBg: "bg-orange-100 dark:bg-orange-900/30",
+            iconBg: "bg-orange-100 dark:bg-blue-900/30",
           },
         ].map((stat, index) => (
           <div

@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState } from "react"
 import { FiEdit2, FiTrash2, FiFileText, FiChevronDown, FiChevronUp, FiEye } from "react-icons/fi"
 import { formatDate, formatCurrency } from "../utils/formatDate"

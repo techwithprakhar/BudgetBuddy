@@ -2,6 +2,7 @@ const userModel = require('../models/userModel')
 const userService = require('../services/userService')
 const cloudinary = require('../config/cloudinary')
 const jwt=require('jsonwebtoken')
+const { google } = require('googleapis');
 
 
 module.exports.registerUser = async (req, res, next) => {
@@ -136,7 +137,7 @@ if (!code) {
 }
  
 // Exchange code for tokens
-const { google } = require('googleapis');
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
@@ -146,10 +147,12 @@ const oauth2Client = new google.auth.OAuth2(
 const { tokens } = await oauth2Client.getToken(code);
 oauth2Client.setCredentials(tokens);
 
+
 // Get user info
 const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
 const googleResponse = await oauth2.userinfo.get();
 const { id: googleId, email, name, picture } = googleResponse.data;
+
 
     if (!email) {
       return res.status(400).json({
@@ -189,15 +192,26 @@ const { id: googleId, email, name, picture } = googleResponse.data;
     }
 
     // 5️⃣ Generate JWT token
+    // const token = jwt.sign(
+    //   { 
+    //     sub: user._id,
+    //     email: user.email,
+    //     name: user.name
+    //   },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: '7d' }
+    // );
+
     const token = jwt.sign(
-      { 
-        sub: user._id,
-        email: user.email,
-        name: user.name
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+  { 
+    _id: user._id, // ← change from `sub` to `_id`
+    email: user.email,
+    name: user.name
+  },
+  process.env.JWT_SECRET,
+  { expiresIn: '7d' }
+)
+
 
     // Set cookie with proper options for cross-origin auth
     res.cookie('token', token, {

@@ -1,4 +1,3 @@
-"use client"
 import { NavLink } from "react-router-dom"
 import { FiHome, FiTrendingUp, FiTrendingDown, FiTarget, FiSettings, FiLogOut } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"

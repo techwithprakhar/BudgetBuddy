@@ -47,6 +47,26 @@ export const AuthProvider = ({ children }) => {
     return () => { didCancel = true }
   }, [])
 
+//   useEffect(() => {
+//   const token = localStorage.getItem('token');
+//   if (token && !user) {
+//     // Optional: decode or verify token
+//     // Or fetch user from backend using token
+//     api.get('/user/profile', {
+//       headers: {
+//         Authorization: `Bearer ${token}`
+//       }
+//     })
+//     .then(res => setUser(res.data.user))
+//     .catch(err => {
+//       console.error('Invalid token or user fetch failed');
+//       localStorage.removeItem('token');
+//       setUser(null);
+//     });
+//   }
+// }, [user]);
+
+
   const login = async (email, password) => {
     setLoading(true)
     try {
@@ -82,6 +102,7 @@ export const AuthProvider = ({ children }) => {
   const handleGoogleLoginSuccess = async (tokenResponse) => {
     setLoading(true)
     try {
+     
       const response = await api.post('/user/google-login', {
         code: tokenResponse.code
       })
@@ -186,28 +207,7 @@ const logout = async () => {
     }
   }
 
-  // For file upload, override the global Content-Type header with multipart/form-data.
-  // Axios will set the correct boundary automatically. Do NOT set this globally!
-  // const uploadProfilePicture = async (formData) => {
-  //   const res = await api.patch('/user/profile-picture', formData, {
-  //     headers: { 'Content-Type': 'multipart/form-data' }
-  //   });
-  //   if (res.status === 200) {
-  //     // update user state with new profilePicUrl from res.data
-  //     setUser(user => ({ ...user, profilePicture: res.data.profilePicUrl }));
-  //     return { success: true };
-  //   }
-  //   return { success: false };
-  // };
-
-
-  // Helper: Only redirect to login if not loading and user is null
-  // Use this in your protected route logic, not here in context
-
-  // Example usage in your route (not in this file):
-  // if (!loading && !user) navigate('/login')
-  // if (!loading && user) show transactions
-
+  
   return (
     <AuthContext.Provider
       value={{
