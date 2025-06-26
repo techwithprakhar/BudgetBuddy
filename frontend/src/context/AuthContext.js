@@ -116,10 +116,10 @@ export const AuthProvider = ({ children }) => {
         return { success: true }
       }
     } catch (error) {
-      console.log('error', error)
+      console.log('error', error);
       return {
         success: false,
-        error: error.response?.data?.message || "Google login failed";
+        error: error.response?.data?.message || "Google login failed"
 
         
       }
