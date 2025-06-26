@@ -14,9 +14,9 @@ require('dotenv').config();
 const port=process.env.PORT;
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Set to your frontend URL
+  origin: process.env.FRONTEND_PROD, // Set to your frontend URL
   credentials: true // Allow cookies and credentials
-}))   // currently I am allowing all origins to send requiest to our backend
+}))   
 app.use(express.json())
 app.use(cookie())
 
