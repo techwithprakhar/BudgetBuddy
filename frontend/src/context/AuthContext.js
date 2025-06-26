@@ -103,6 +103,7 @@ export const AuthProvider = ({ children }) => {
   // 🎯 Google OAuth Login Handler
   const handleGoogleLoginSuccess = async (tokenResponse) => {
     setLoading(true)
+
     try {
      
       const response = await api.post('/user/google-login', {
@@ -115,9 +116,12 @@ export const AuthProvider = ({ children }) => {
         return { success: true }
       }
     } catch (error) {
+      console.log('error', error)
       return {
         success: false,
-        error: error.response?.data?.message || "Google login failed"
+        error: error.response?.data?.message || "Google login failed";
+
+        
       }
     } finally {
       setLoading(false)
