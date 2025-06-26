@@ -13,10 +13,21 @@ require('dotenv').config();
 
 const port=process.env.PORT;
 
+// Split comma-separated list into array
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+
 app.use(cors({
-  origin: process.env.FRONTEND_PROD, // Set to your frontend URL
-  credentials: true // Allow cookies and credentials
-}))   
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error(`❌ Blocked by CORS: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json())
 app.use(cookie())
 
