@@ -115,22 +115,8 @@ module.exports.updateProfile = async (req, res) => {
 // 🎯 Google OAuth Login/Signup
 module.exports.googleLogin = async (req, res) => {
   try {
-    // const { access_token } = req.body;
-
-    // if (!access_token) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: 'Access token is required'
-    //   });
-    // }
-
-    // // 1️⃣ Get user info from Google
-    // const googleResponse = await axios.get(
-    //   `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`
-    // );
-
-    // const { id: googleId, email, name, picture } = googleResponse.data;
-
+   
+    
     const { code } = req.body;
 if (!code) {
   return res.status(400).json({ success: false, message: 'Authorization code is required' });

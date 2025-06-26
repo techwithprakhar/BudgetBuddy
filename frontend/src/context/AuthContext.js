@@ -109,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         code: tokenResponse.code
       })
       if (response.data.success) {
+        console.log('response.data.token', response.data.token)
         localStorage.setItem('token', response.data.token)
         setUser(response.data.user)
         return { success: true }
