@@ -140,8 +140,9 @@ const Login = () => {
               </div>
             </div>
 
+             { /*
             <div className="mt-6">
-              {/* 🎯 Google Login Button */}
+              {/* 🎯 Google Login Button '}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
@@ -152,6 +153,10 @@ const Login = () => {
                 {loading ? "Signing in..." : "Sign in with Google"}
               </button>
             </div>
+
+            */}
+
+
           </div>
         </form>
       </div>
