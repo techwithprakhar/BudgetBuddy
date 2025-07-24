@@ -104,6 +104,8 @@ export const AuthProvider = ({ children }) => {
   const handleGoogleLoginSuccess = async (tokenResponse) => {
     setLoading(true)
 
+    console.log(tokenResponse)
+
     try {
      
       const response = await api.post('/user/google-login', {
