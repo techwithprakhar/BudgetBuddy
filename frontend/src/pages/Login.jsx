@@ -128,6 +128,8 @@ const Login = () => {
             </button>
           </div>
 
+          
+          {/*}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -140,7 +142,7 @@ const Login = () => {
               </div>
             </div>
 
-             { /*
+          
             <div className="mt-6">
               {/* 🎯 Google Login Button '}
               <button
@@ -154,10 +156,10 @@ const Login = () => {
               </button>
             </div>
 
-            */}
+            
 
 
-          </div>
+          </div>     */}
         </form>
       </div>
     </div>
