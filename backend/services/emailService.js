@@ -16,13 +16,22 @@ const createTransporter = () => {
 // Send OTP email for email verification
 const sendOTPEmail = async (email, otp) => {
   try {
-    // Check if SMTP is configured
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn('SMTP not configured. OTP:', otp);
+    // Check if SMTP is configured with detailed logging
+    const missingVars = [];
+    if (!process.env.SMTP_HOST) missingVars.push('SMTP_HOST');
+    if (!process.env.SMTP_USER) missingVars.push('SMTP_USER');
+    if (!process.env.SMTP_PASS) missingVars.push('SMTP_PASS');
+    
+    if (missingVars.length > 0) {
+      console.warn('📧 SMTP Configuration Issue:');
+      console.warn(`Missing variables: ${missingVars.join(', ')}`);
+      console.warn(`OTP for ${email}: ${otp}`);
+      console.warn('Please configure SMTP environment variables in Render!');
       // Still return success for development purposes
       return { success: true, messageId: 'development-mode' };
     }
 
+    console.log('📧 Attempting to send OTP email to:', email);
     const transporter = createTransporter();
     
     const mailOptions = {
@@ -43,11 +52,28 @@ const sendOTPEmail = async (email, otp) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('OTP email sent:', info.messageId);
+    console.log('✅ OTP email sent successfully!');
+    console.log('Message ID:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending OTP email:', error.message);
-    throw new Error('Failed to send OTP email');
+    console.error('❌ Error sending OTP email:', error.message);
+    console.error('Error code:', error.code);
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to send OTP email';
+    if (error.code === 'EAUTH') {
+      errorMessage = 'SMTP authentication failed. Check SMTP_USER and SMTP_PASS. For Gmail, use an App Password!';
+      console.error('🔐 Authentication failed. Make sure you\'re using Gmail App Password.');
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = 'SMTP connection failed. Check SMTP_HOST and SMTP_PORT.';
+      console.error('🔌 Connection failed. Check SMTP settings.');
+    } else if (error.message?.includes('Invalid login')) {
+      errorMessage = 'Invalid SMTP credentials. For Gmail, use an App Password!';
+      console.error('❌ Invalid login. Use Gmail App Password.');
+    }
+    
+    console.error('Full error:', error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -57,13 +83,22 @@ const sendPasswordResetEmail = async (email, resetToken) => {
     // Default to port 3000 for Create React App (can be overridden with FRONTEND_URL in .env)
     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
     
-    // Check if SMTP is configured
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn('SMTP not configured. Password reset link will not be sent via email.');
+    // Check if SMTP is configured with detailed logging
+    const missingVars = [];
+    if (!process.env.SMTP_HOST) missingVars.push('SMTP_HOST');
+    if (!process.env.SMTP_USER) missingVars.push('SMTP_USER');
+    if (!process.env.SMTP_PASS) missingVars.push('SMTP_PASS');
+    
+    if (missingVars.length > 0) {
+      console.warn('📧 SMTP Configuration Issue:');
+      console.warn(`Missing variables: ${missingVars.join(', ')}`);
+      console.warn('Password reset link (for manual use):', resetUrl);
+      console.warn('Please configure SMTP environment variables in Render!');
       // Still return success for development purposes
       return { success: true, messageId: 'development-mode' };
     }
 
+    console.log('📧 Attempting to send password reset email to:', email);
     const transporter = createTransporter();
     
     const mailOptions = {
@@ -89,11 +124,29 @@ const sendPasswordResetEmail = async (email, resetToken) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Password reset email sent:', info.messageId);
+    console.log('✅ Password reset email sent successfully!');
+    console.log('Message ID:', info.messageId);
+    console.log('Sent to:', email);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending password reset email:', error.message);
-    throw new Error('Failed to send password reset email');
+    console.error('❌ Error sending password reset email:', error.message);
+    console.error('Error code:', error.code);
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to send password reset email';
+    if (error.code === 'EAUTH') {
+      errorMessage = 'SMTP authentication failed. Check SMTP_USER and SMTP_PASS. For Gmail, use an App Password!';
+      console.error('🔐 Authentication failed. Make sure you\'re using Gmail App Password.');
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = 'SMTP connection failed. Check SMTP_HOST and SMTP_PORT.';
+      console.error('🔌 Connection failed. Check SMTP settings.');
+    } else if (error.message?.includes('Invalid login')) {
+      errorMessage = 'Invalid SMTP credentials. For Gmail, use an App Password!';
+      console.error('❌ Invalid login. Use Gmail App Password.');
+    }
+    
+    console.error('Full error:', error);
+    throw new Error(errorMessage);
   }
 };
 

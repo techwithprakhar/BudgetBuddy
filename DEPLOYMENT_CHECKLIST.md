@@ -42,10 +42,16 @@ CLOUDINARY_API_SECRET=your-api-secret
 
 ### Frontend Environment Variables (.env on Production Server or Build Settings)
 
+**For Vercel:**
+1. Go to your project → Settings → Environment Variables
+2. Add these variables:
+
 ```env
-REACT_APP_API_URL=https://your-backend-domain.com
+REACT_APP_API_URL=https://your-backend-domain.onrender.com
 REACT_APP_GOOGLE_CLIENT_ID=your-production-google-client-id.apps.googleusercontent.com
 ```
+
+**After adding variables, redeploy your frontend on Vercel!**
 
 ### Google Cloud Console Configuration
 
@@ -101,6 +107,70 @@ Replace these placeholders with your actual production URLs:
 4. Verify Google Sign-In works
 5. Test password reset flow
 6. Check OTP verification
+
+## Troubleshooting Common Issues
+
+### ❌ CORS Error: "XHR failed loading"
+
+**Symptom:** Frontend can't connect to backend, showing "XHR failed loading"
+
+**Fix:**
+1. Check your backend logs on Render
+2. Look for the line: `✅ Allowed origins are: [...]`
+3. Verify your frontend URL (from Vercel) matches what's in `ALLOWED_ORIGINS`
+4. In Render backend settings → Environment, set:
+   ```
+   ALLOWED_ORIGINS=https://your-frontend.vercel.app
+   ```
+   ⚠️ Make sure:
+   - It starts with `https://`
+   - No trailing slash `/`
+   - Exact match with Vercel URL
+5. **Redeploy your backend on Render** after changing environment variables
+
+### 📧 Email Not Sending
+
+**Symptom:** "SMTP not configured" or "Failed to send email" errors
+
+**How to Check:**
+1. Go to your Render backend → Logs
+2. Look for these specific messages:
+   - `📧 SMTP Configuration Issue:` = Missing environment variables
+   - `🔐 Authentication failed` = Wrong password (not using App Password)
+   - `🔌 Connection failed` = Wrong SMTP_HOST or SMTP_PORT
+
+**Fix:**
+1. Generate Gmail App Password: https://myaccount.google.com/apppasswords
+   - Enable 2-Step Verification first (if not enabled): https://myaccount.google.com/security
+   - Create App Password: Select "Mail" → "Other" → Enter "Budget Buddy"
+   - Copy the 16-character password (spaces don't matter)
+   
+2. In Render → Your Backend Service → Environment → Add New:
+   ```
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=xxxx xxxx xxxx xxxx  (paste the 16-char App Password)
+   FRONTEND_URL=https://your-frontend.vercel.app  (your Vercel URL)
+   ```
+   ⚠️ **CRITICAL:** Use the App Password, NOT your regular Gmail password!
+   
+3. **Save environment variables**
+4. **Trigger a redeploy** (or Render will auto-redeploy if enabled)
+5. **Check logs again** - you should see: `✅ Password reset email sent successfully!`
+
+### 🔐 Google Sign-In 400 Error
+
+**Symptom:** "Redirect URI mismatch" error
+
+**Fix:**
+1. In Google Cloud Console → OAuth 2.0 Client IDs → Authorized redirect URIs
+2. Add your production frontend URL: `https://your-frontend.vercel.app`
+3. In Render → Environment, update:
+   ```
+   GOOGLE_REDIRECT_URI=https://your-frontend.vercel.app
+   ```
+4. **Redeploy backend** after changes
 
 ## Rollback Plan
 
