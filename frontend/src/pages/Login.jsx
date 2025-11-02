@@ -1,10 +1,11 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi"
 import { FcGoogle } from "react-icons/fc"
 import { useAuth } from "../context/AuthContext"
 
 const Login = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,7 +13,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
-  const { login, googleLogin, loading } = useAuth()
+  const { login, googleLogin, loading, user } = useAuth()
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/")
+    }
+  }, [user, navigate])
 
   const handleChange = (e) => {
     setFormData({
@@ -118,6 +126,14 @@ const Login = () => {
             </div>
           </div>
 
+          <div className="flex items-center justify-end">
+            <div className="text-sm">
+              <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                Forgot password?
+              </Link>
+            </div>
+          </div>
+
           <div>
             <button
               type="submit"
@@ -128,8 +144,6 @@ const Login = () => {
             </button>
           </div>
 
-          
-          {/*}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -142,9 +156,7 @@ const Login = () => {
               </div>
             </div>
 
-          
             <div className="mt-6">
-              {/* 🎯 Google Login Button '}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
@@ -155,11 +167,7 @@ const Login = () => {
                 {loading ? "Signing in..." : "Sign in with Google"}
               </button>
             </div>
-
-            
-
-
-          </div>     */}
+          </div>
         </form>
       </div>
     </div>

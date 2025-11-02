@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar"
 import Sidebar from "./components/Sidebar"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 import Transactions from "./pages/Transactions"
 import Income from "./pages/Income"
 import Expenses from "./pages/Expenses"
@@ -42,6 +44,22 @@ function AppContent() {
             element={
               <PublicRoute>
                 <Signup />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPassword />
               </PublicRoute>
             }
           />

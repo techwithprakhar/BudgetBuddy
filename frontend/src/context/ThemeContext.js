@@ -14,8 +14,24 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem("theme")
-    return saved ? JSON.parse(saved) : false
+    try {
+      const saved = localStorage.getItem("theme")
+      if (!saved) return false
+      
+      // Handle legacy "dark" string value or boolean JSON
+      if (saved === "dark") return true
+      if (saved === "light") return false
+      
+      // Try to parse as JSON (should be boolean)
+      const parsed = JSON.parse(saved)
+      return typeof parsed === "boolean" ? parsed : false
+    } catch (error) {
+      // If JSON parsing fails, check for string values
+      const saved = localStorage.getItem("theme")
+      if (saved === "dark") return true
+      if (saved === "light") return false
+      return false
+    }
   })
 
   useEffect(() => {

@@ -1,8 +1,9 @@
 import axios from "axios"
 
 // Create axios instance with base configuration
+// For Create React App, use REACT_APP_ prefix
+// Make sure to use http:// for localhost, not https://
 const api = axios.create({
-
   baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000",
   timeout: 10000,
   headers: {

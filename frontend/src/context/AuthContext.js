@@ -83,6 +83,38 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const sendOTP = async (name, email, password) => {
+    setLoading(true)
+    try {
+      const response = await api.post('/user/send-otp', { name, email, password })
+      return { success: true, message: response.data.message }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to send OTP"
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const verifyOTPAndRegister = async (name, email, password, otp) => {
+    setLoading(true)
+    try {
+      const response = await api.post('/user/verify-otp-register', { name, email, password, otp })
+      localStorage.setItem('token', response.data.token)
+      setUser(response.data.user)
+      return { success: true, message: response.data.message }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "OTP verification failed"
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const signup = async (name, email, password) => {
     setLoading(true)
     try {
@@ -100,30 +132,79 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const requestPasswordReset = async (email) => {
+    setLoading(true)
+    try {
+      const response = await api.post('/user/forgot-password', { email })
+      return { success: true, message: response.data.message }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to send reset link"
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const resetPassword = async (token, newPassword) => {
+    setLoading(true)
+    try {
+      const response = await api.post('/user/reset-password', { token, newPassword })
+      localStorage.setItem('token', response.data.token)
+      setUser(response.data.user)
+      return { success: true, message: response.data.message }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to reset password"
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const changePassword = async (currentPassword, newPassword) => {
+    setLoading(true)
+    try {
+      const response = await api.post('/user/change-password', { currentPassword, newPassword })
+      localStorage.setItem('token', response.data.token)
+      setUser(response.data.user)
+      return { success: true, message: response.data.message || 'Password changed successfully' }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to change password"
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // 🎯 Google OAuth Login Handler
   const handleGoogleLoginSuccess = async (tokenResponse) => {
     setLoading(true)
 
-    console.log(tokenResponse)
-
     try {
-     
       const response = await api.post('/user/google-login', {
         code: tokenResponse.code
       })
       if (response.data.success) {
-        console.log('response.data.token', response.data.token)
         localStorage.setItem('token', response.data.token)
         setUser(response.data.user)
         return { success: true }
+      } else {
+        return {
+          success: false,
+          error: response.data.message || "Google login failed"
+        }
       }
     } catch (error) {
-      console.log('error', error);
+      console.error('Google login error:', error);
+      const errorMessage = error.response?.data?.message || "Google login failed. Please try again.";
       return {
         success: false,
-        error: error.response?.data?.message || "Google login failed"
-
-        
+        error: errorMessage
       }
     } finally {
       setLoading(false)
@@ -224,6 +305,11 @@ const logout = async () => {
         loading,
         login,
         signup,
+        sendOTP,
+        verifyOTPAndRegister,
+        requestPasswordReset,
+        resetPassword,
+        changePassword,
         googleLogin,
         logout,
         updateProfile,

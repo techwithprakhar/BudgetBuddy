@@ -3,7 +3,7 @@ import { FiUser, FiLock, FiCamera, FiSave } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"
 
 const Settings = () => {
-  const { user, updateProfile, loading } = useAuth()
+  const { user, updateProfile, changePassword, loading } = useAuth()
   const [activeTab, setActiveTab] = useState("profile")
   const [profileData, setProfileData] = useState({
     name: user?.name || "",
@@ -41,6 +41,11 @@ const Settings = () => {
     e.preventDefault()
     setMessage({ type: "", text: "" })
 
+    if (!passwordData.currentPassword) {
+      setMessage({ type: "error", text: "Please enter your current password" })
+      return
+    }
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setMessage({ type: "error", text: "New passwords do not match" })
       return
@@ -51,13 +56,18 @@ const Settings = () => {
       return
     }
 
-    // Mock password update
-    setMessage({ type: "success", text: "Password updated successfully!" })
-    setPasswordData({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    })
+    const result = await changePassword(passwordData.currentPassword, passwordData.newPassword)
+
+    if (result.success) {
+      setMessage({ type: "success", text: result.message || "Password updated successfully!" })
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
+    } else {
+      setMessage({ type: "error", text: result.error || "Failed to update password" })
+    }
   }
 
   const handleImageUpload = (e) => {
